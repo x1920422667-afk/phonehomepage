@@ -47,12 +47,10 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
 .hero{position:relative;overflow:hidden;min-height:492px;border-radius:28px;border:1px solid #ffffff14;
  box-shadow:0 28px 70px #0008;margin:10px 0 6px;background:#0b1724}
 .hero-bg{position:absolute;inset:0;background:
- linear-gradient(180deg,#00111f1a 0%,#07111b24 38%,#061019f4 79%,#050b12 100%),
- radial-gradient(120% 90% at 70% 10%,#225b7d 0%,#0c2535 38%,#06111d 70%),
- linear-gradient(135deg,#0f3650,#0a141d)}
-.hero-bg .himg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+ linear-gradient(180deg,#00111f08 0%,#07111b10 40%,#061019d8 78%,#050b12 100%)}
+.hero-bg .himg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.82}
 .hero-bg .hshade{position:absolute;inset:0;background:linear-gradient(180deg,#00111f08 0%,#07111b38 42%,#061019f2 82%,#050b12 100%)}
-.hero-art{position:absolute;right:-12%;top:-1%;width:78%;height:75%;
+.hero-art{display:none;position:absolute;right:-12%;top:-1%;width:78%;height:75%;
  background:radial-gradient(circle at 40% 38%,#79d8ff80 0 3%,transparent 4%),
  linear-gradient(145deg,transparent 20%,#1f4f68 21% 35%,transparent 36%),
  linear-gradient(165deg,#234861,#071521 62%);filter:saturate(1.12)}
@@ -177,6 +175,22 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
 .video .vbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.34}
 .video .wm{position:relative;z-index:2;max-width:86%;font-weight:900;font-size:clamp(22px,7.5vw,48px);letter-spacing:.07em;color:#fff3;transform:scaleY(1.05);text-align:center;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .video .prebadge{position:absolute;top:20%;left:50%;transform:translateX(-50%);z-index:2;font-size:9px;letter-spacing:2px;color:#bfe9ff;background:#00000055;border:1px solid #55ddff33;padding:6px 12px;border-radius:999px}
+.video .velement{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1}
+.video .voverlay{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:space-between;padding:calc(14px + var(--safe-top)) 16px calc(14px + var(--safe-bottom));pointer-events:none}
+.video .voverlay>*{pointer-events:auto}
+.vtop{display:flex;align-items:center;gap:10px}
+.vbadge{font-size:9px;font-weight:800;letter-spacing:1px;color:#bfe9ff;background:#00000066;border:1px solid #55ddff33;padding:5px 10px;border-radius:999px;white-space:nowrap}
+.vtitle{font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 8px #000;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vcenter{flex:1;display:grid;place-items:center}
+.vplaybig{width:72px;height:72px;border-radius:50%;background:#00000066;border:2px solid #ffffff44;font-size:28px;color:#fff;display:grid;place-items:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer;transition:all .2s}
+.vplaybig:active{transform:scale(.92);background:#00000099}
+.vbottom{display:flex;flex-direction:column;gap:10px}
+.vsrcrow,.veprow{display:flex;gap:8px;overflow:auto;scrollbar-width:none;padding-bottom:2px}
+.vsrcrow::-webkit-scrollbar,.veprow::-webkit-scrollbar{display:none}
+.vsrc,.vep{white-space:nowrap;padding:7px 13px;border-radius:999px;background:#00000055;border:1px solid #ffffff22;color:#cfd8e0;font-size:10px;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.vsrc.active,.vep.active{color:#fff;background:#168fff44;border-color:#3aafff66}
+.pinfo{position:absolute;bottom:calc(158px + var(--safe-bottom));left:18px;right:18px;z-index:4;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#9aa7b3;gap:10px}
+.pinfo span:first-child{color:#cfe0ec;font-weight:700}
 .player-top,.player-bottom{position:absolute;left:0;right:0;z-index:4;padding:calc(18px + var(--safe-top)) 18px 18px;background:linear-gradient(180deg,#000b,#0000)}.player-top{top:0}.player-bottom{bottom:0;padding-bottom:calc(18px + var(--safe-bottom));background:linear-gradient(0deg,#000d,#0000)}
 .p-topline{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .ptitle{font-size:14px;font-weight:800;line-height:1.4}
@@ -411,7 +425,19 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
 
 <!-- 播放器 -->
 <div class="player" id="player">
-  <div class="video" id="video"><img class="vbg" id="videoBg" alt=""><span class="prebadge">CINEMATIC PREVIEW</span><span class="wm" id="videoWm">DUNE II</span></div>
+  <div class="video" id="video">
+    <video class="velement" id="videoEl" playsinline poster=""></video>
+    <img class="vbg" id="videoBg" alt="">
+    <div class="voverlay">
+      <div class="vtop"><span class="vbadge" id="vBadge">4K HDR</span><span class="vtitle" id="vTitle">—</span></div>
+      <div class="vcenter" id="vCenter"><div class="vplaybig" onclick="togglePlay()">▶</div></div>
+      <div class="vbottom">
+        <div class="vsrcrow" id="vSrcRow"></div>
+        <div class="veprow" id="vEpRow" style="display:none"></div>
+      </div>
+    </div>
+    <span class="prebadge" id="prebadge">正在缓冲…</span>
+  </div>
   <div class="player-top">
     <div class="p-topline">
       <div><div class="ptitle" id="ptitle">沙丘 2</div><div class="small" id="psmall">4K HDR · 中文原声 · 杜比全景声</div></div>
@@ -425,6 +451,7 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
     <div class="quality" data-q="1080P" onclick="pickQuality(this)"><div><div>1080P</div><div class="qsub">自动 · 省流量平衡</div></div><span>✓</span></div>
     <div class="quality" data-q="720P" onclick="pickQuality(this)"><div><div>720P</div><div class="qsub">节省流量</div></div><span>✓</span></div>
   </div>
+  <div class="pinfo"><span id="pInfoCur">第 1 集</span><span id="pInfoSrc">播放源 1 · 在线预览</span></div>
   <div class="player-bottom">
     <div class="timerow"><span id="pCur">12:43</span><span id="pTotal">2:46:02</span></div>
     <div class="progress" id="pProgress"><i></i></div>
@@ -675,17 +702,17 @@ function renderHomeRails(){
     contEl.innerHTML=hist.slice(0,8).map(function(h){
       var f=h.f||h;
       var pct=h.total?Math.min(100,Math.round(h.cur/h.total*100)):0;
-      return '<div class="card" onclick="openDetail('+enc(f)+')">'+cardPoster(f,pct)+'<div class="card-name">'+esc(f.t)+'</div><div class="card-meta">已看 '+fmt(h.cur||0)+' / '+fmt(h.total||0)+'</div></div>';
+      return '<div class="card" onclick="openDetail(\''+enc(f)+'\')">'+cardPoster(f,pct)+'<div class="card-name">'+esc(f.t)+'</div><div class="card-meta">已看 '+fmt(h.cur||0)+' / '+fmt(h.total||0)+'</div></div>';
     }).join('');
   }else{
     $('contSub').textContent='还没有观看记录，去发现好片吧';
     contEl.innerHTML=DECK.slice(0,4).map(function(f){
-      return '<div class="card" onclick="openDetail('+enc(f)+')">'+cardPoster(f)+'<div class="card-name">'+esc(f.t)+'</div><div class="card-meta">★ '+(f.s||'—')+' · '+esc(f.y||'')+'</div></div>';
+      return '<div class="card" onclick="openDetail(\''+enc(f)+'\')">'+cardPoster(f)+'<div class="card-name">'+esc(f.t)+'</div><div class="card-meta">★ '+(f.s||'—')+' · '+esc(f.y||'')+'</div></div>';
     }).join('');
   }
   var hot=state.online?state.list.slice(0,10):DECK.slice(0,10);
   $('homeRail').innerHTML=hot.map(function(f){
-    return '<div class="card" onclick="openDetail('+enc(f)+')">'+cardPoster(f)+'<div class="card-name">'+esc(f.t)+'</div><div class="card-meta">★ '+(f.s||'—')+' · '+esc(f.y||'')+'</div></div>';
+    return '<div class="card" onclick="openDetail(\''+enc(f)+'\')">'+cardPoster(f)+'<div class="card-name">'+esc(f.t)+'</div><div class="card-meta">★ '+(f.s||'—')+' · '+esc(f.y||'')+'</div></div>';
   }).join('');
 }
 
@@ -714,7 +741,7 @@ function renderDiscover(){
     return;
   }
   el.innerHTML=state.list.map(function(f){
-    return '<div class="search-result" onclick="openDetail('+enc(f)+')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+' · '+esc(f.src||'')+'</div></div><span class="rscore">★ '+(f.s||'—')+'</span></div>';
+    return '<div class="search-result" onclick="openDetail(\''+enc(f)+'\')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+' · '+esc(f.src||'')+'</div></div><span class="rscore">★ '+(f.s||'—')+'</span></div>';
   }).join('');
   $('discoverCount').textContent=state.list.length+' 部';
   $('loadMore').style.display=(state.page<state.totalPages)?'block':'none';
@@ -794,12 +821,12 @@ var doSearch=debounce(function(){
     if(!rows.length&&local.length)rows=local;
     if(!rows.length){$('searchResults').innerHTML='<div class="empty">没有找到「'+esc(q)+'」相关内容</div>';return}
     $('searchResults').innerHTML=rows.map(function(f){
-      return '<div class="search-result" onclick="openDetail('+enc(f)+')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+'<br>'+esc(f.src||'片单精选')+'</div></div><span class="rscore">★ '+(f.s||'—')+'</span></div>';
+      return '<div class="search-result" onclick="openDetail(\''+enc(f)+'\')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+'<br>'+esc(f.src||'片单精选')+'</div></div><span class="rscore">★ '+(f.s||'—')+'</span></div>';
     }).join('');
   }).catch(function(){
     if(local.length){
       $('searchResults').innerHTML=local.map(function(f){
-        return '<div class="search-result" onclick="openDetail('+enc(f)+')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+'</div></div><span class="rscore">★ '+(f.s||'—')+'</span></div>';
+        return '<div class="search-result" onclick="openDetail(\''+enc(f)+'\')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+'</div></div><span class="rscore">★ '+(f.s||'—')+'</span></div>';
       }).join('');
     }else $('searchResults').innerHTML='<div class="empty">没有找到「'+esc(q)+'」相关内容</div>';
   });
@@ -819,14 +846,14 @@ function renderLibrary(){
     var favs=ls(K_FAV,[]);
     if(!favs.length){el.innerHTML='<div class="empty">还没有收藏<br>在详情页点「♡ 收藏」即可加入片库</div>';return}
     el.innerHTML=favs.map(function(f){
-      return '<div class="search-result" onclick="openDetail('+enc(f)+')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+'</div></div><span class="rscore">★ '+(f.s||'—')+'</span></div>';
+      return '<div class="search-result" onclick="openDetail(\''+enc(f)+'\')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+'</div></div><span class="rscore">★ '+(f.s||'—')+'</span></div>';
     }).join('');
   }else if(state.lib==='hist'){
     var hist=ls(K_HIST,[]);
     if(!hist.length){el.innerHTML='<div class="empty">还没有观看记录<br>看完的影片会出现在这里</div>';return}
     el.innerHTML=hist.map(function(h){
       var f=h.f||h;
-      return '<div class="search-result" onclick="openDetail('+enc(f)+')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+(h.total?('看到 '+fmt(h.cur||0)):'已加入历史')+'</div></div><span class="rscore">'+Math.min(100,h.total?Math.round(h.cur/h.total*100):0)+'%</span></div>';
+      return '<div class="search-result" onclick="openDetail(\''+enc(f)+'\')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+(h.total?('看到 '+fmt(h.cur||0)):'已加入历史')+'</div></div><span class="rscore">'+Math.min(100,h.total?Math.round(h.cur/h.total*100):0)+'%</span></div>';
     }).join('');
   }else{
     el.innerHTML='<div class="empty">暂无下载内容<br>播放时可在播放设置中选择缓存</div>';
@@ -835,6 +862,7 @@ function renderLibrary(){
 
 /* ================= 详情 ================= */
 function openDetail(f){
+  if(typeof f==='string'){try{f=JSON.parse(decodeURIComponent(f))}catch(e){return}}
   state.cur=f;state.curTouched=true;
   var img=$('detailImg');
   var bg=backdropOf(f);
@@ -860,7 +888,7 @@ function openDetail(f){
   }else castSec.style.display='none';
   var rel=related(f);
   $('detailRail').innerHTML=rel.slice(0,8).map(function(x){
-    return '<div class="card" onclick="openDetail('+enc(x)+')">'+cardPoster(x)+'<div class="card-name">'+esc(x.t)+'</div><div class="card-meta">★ '+(x.s||'—')+'</div></div>';
+    return '<div class="card" onclick="openDetail(\''+enc(x)+'\')">'+cardPoster(x)+'<div class="card-name">'+esc(x.t)+'</div><div class="card-meta">★ '+(x.s||'—')+'</div></div>';
   }).join('');
   $('detail').classList.add('show');
   document.body.style.overflow='hidden';
@@ -911,10 +939,14 @@ function openPlayer(){
   if(f){
     $('ptitle').textContent=f.t;
     $('psmall').textContent=(f.m==='tv'?'剧集 · ':'')+(f.src||'在线预览')+' · '+(f.s?'★ '+f.s:'');
-    $('videoWm').textContent=(f.o||f.t).toUpperCase();
+    $('videoWm')&&($('videoWm').textContent=(f.o||f.t).toUpperCase());
+    $('vTitle').textContent=f.t;
+    $('vBadge').textContent=(f.m==='tv'?'剧集':'电影')+' · 4K HDR';
     var bg=backdropOf(f);
     var vbg=$('videoBg');
     if(bg){vbg.src=bg;vbg.style.display='block'}else vbg.style.display='none';
+    var vel=$('videoEl');
+    if(vel){vel.poster=bg||'';try{vel.pause()}catch(e){}}
     $('miniTitle').textContent=f.t;
     var art=$('miniArt');
     art.className='mini-art p1';
@@ -922,11 +954,46 @@ function openPlayer(){
     else art.style.backgroundImage='';
     state.curTotal=totalSec(f);
     if(!state.curTime||state.curTime>state.curTotal)state.curTime=Math.min(762,Math.floor(state.curTotal*0.08));
+    // 填充播放源
+    var srcs=['在线源 1','在线源 2','网盘源','蓝光原盘'];
+    $('vSrcRow').innerHTML=srcs.map(function(s,i){return '<span class="vsrc'+(i===0?' active':'')+'" onclick="pickSrc(this,'+i+')">'+s+'</span>'}).join('');
+    // 填充选集（剧集显示，电影隐藏）
+    var epRow=$('vEpRow');
+    if(f.m==='tv'){
+      var eps=[];
+      for(var i=1;i<=(f.d>0?f.d:24);i++)eps.push(i);
+      epRow.innerHTML=eps.map(function(e){return '<span class="vep'+(e===1?' active':'')+'" onclick="pickEp(this,'+e+')">第 '+e+' 集</span>'}).join('');
+      epRow.style.display='flex';
+      $('pInfoCur').textContent='第 1 集';
+    }else{
+      epRow.style.display='none';
+      $('pInfoCur').textContent='正片';
+    }
+    $('pInfoSrc').textContent='在线源 1 · 在线预览';
+    $('prebadge').textContent='正在缓冲…';
+    setTimeout(function(){$('prebadge').style.display='none'},1200);
   }
   $('player').classList.add('show');
   $('mini').classList.remove('show');
   $('sheet').classList.remove('show');
   updatePlayerUI();
+}
+function pickSrc(el,i){
+  document.querySelectorAll('#vSrcRow .vsrc').forEach(function(s){s.classList.remove('active')});
+  el.classList.add('active');
+  $('pInfoSrc').textContent=el.textContent+' · 在线预览';
+  $('prebadge').style.display='block';
+  $('prebadge').textContent='切换至 '+el.textContent+'…';
+  setTimeout(function(){$('prebadge').style.display='none'},1000);
+  toast('已切换至 '+el.textContent);
+}
+function pickEp(el,e){
+  document.querySelectorAll('#vEpRow .vep').forEach(function(v){v.classList.remove('active')});
+  el.classList.add('active');
+  $('pInfoCur').textContent='第 '+e+' 集';
+  state.curTime=0;
+  updatePlayerUI();
+  toast('已切换至第 '+e+' 集');
 }
 function closePlayer(){
   $('player').classList.remove('show');
@@ -946,6 +1013,8 @@ function togglePlay(){
   state.playing=!state.playing;
   $('playBtn').textContent=state.playing?'Ⅱ':'▶';
   $('miniPlay').textContent=state.playing?'Ⅱ':'▶';
+  var vc=$('vCenter');
+  if(vc)vc.style.display=state.playing?'none':'grid';
   if(state.playing){
     clearInterval(state.timer);
     state.timer=setInterval(function(){
@@ -1127,6 +1196,7 @@ window.setLib=setLib;window.toggleFav=toggleFav;
 window.playSelected=playSelected;window.openPlayer=openPlayer;window.closePlayer=closePlayer;
 window.minimizePlayer=minimizePlayer;window.closeMini=closeMini;window.togglePlay=togglePlay;
 window.seekBy=seekBy;window.toggleSheet=toggleSheet;window.pickQuality=pickQuality;
+window.pickSrc=pickSrc;window.pickEp=pickEp;
 window.openRes=openRes;window.runRes=runRes;window.copyResByIndex=copyResByIndex;
 window.toggleSwitch=toggleSwitch;
 window.toast=toast;
