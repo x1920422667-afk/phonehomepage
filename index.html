@@ -43,30 +43,39 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
 .section{margin:26px 0}
 .section-head{display:flex;align-items:end;justify-content:space-between;margin:0 2px 14px;gap:10px}
 .h2{font-size:19px;font-weight:800;letter-spacing:-.2px}.sub{font-size:11px;color:var(--muted);white-space:nowrap}
-/* ============ 首页 Hero ============ */
-.hero{position:relative;overflow:hidden;min-height:492px;border-radius:28px;border:1px solid #ffffff14;
+/* ============ 首页 Hero 封面流轮播 ============ */
+.hero{position:relative;overflow:hidden;min-height:558px;border-radius:28px;border:1px solid #ffffff14;
  box-shadow:0 28px 70px #0008;margin:10px 0 6px;background:#0b1724}
 .hero-bg{position:absolute;inset:0;background:
  linear-gradient(180deg,#00111f08 0%,#07111b10 40%,#061019d8 78%,#050b12 100%);pointer-events:none}
-.hero-bg .himg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.82}
-.hero-bg .hshade{position:absolute;inset:0;background:linear-gradient(180deg,#00111f08 0%,#07111b38 42%,#061019f2 82%,#050b12 100%)}
-.hero-art{display:none;position:absolute;right:-12%;top:-1%;width:78%;height:75%;
- background:radial-gradient(circle at 40% 38%,#79d8ff80 0 3%,transparent 4%),
- linear-gradient(145deg,transparent 20%,#1f4f68 21% 35%,transparent 36%),
- linear-gradient(165deg,#234861,#071521 62%);filter:saturate(1.12)}
-.hero-art:before{content:"";position:absolute;inset:12% 14% 20% 16%;border-radius:45%;
- background:radial-gradient(circle at 52% 42%,#f5c57d 0 4%,transparent 5%),
- linear-gradient(90deg,transparent 44%,#b77b46 45% 49%,transparent 50%);
- transform:rotate(-8deg);opacity:.75;filter:blur(.5px)}
-.hero-copy{position:absolute;inset:auto 20px 20px 20px;z-index:5}
+.hero-bg .himg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.38;filter:blur(18px) saturate(1.2);transform:scale(1.15)}
+.hero-bg .hshade{position:absolute;inset:0;background:linear-gradient(180deg,#050b12a0 0%,#07111b30 30%,#061019c8 72%,#050b12 100%)}
+.hero-stage{position:relative;z-index:4;height:268px;margin-top:22px;display:flex;align-items:center;justify-content:center;perspective:900px;touch-action:pan-y}
+.hc-card{position:absolute;top:50%;border-radius:16px;overflow:hidden;border:1px solid #ffffff22;
+ background:#102233;box-shadow:0 14px 38px #000a;transition:all .5s cubic-bezier(.34,1.3,.5,1);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hc-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.hc-cur{width:168px;height:252px;z-index:3;transform:translateY(-50%) scale(1)}
+.hc-cur .hc-glow{position:absolute;inset:-2px;border-radius:18px;box-shadow:0 0 0 2px #5ec8ff55,0 0 34px #3aaeff44;pointer-events:none}
+.hc-prev,.hc-next{width:132px;height:198px;z-index:2}
+.hc-prev{left:4px;transform:translateY(-50%) rotateY(34deg) translateX(6px);filter:blur(2px) brightness(.62) saturate(.85)}
+.hc-next{right:4px;transform:translateY(-50%) rotateY(-34deg) translateX(-6px);filter:blur(2px) brightness(.62) saturate(.85)}
+.hc-fold{position:absolute;inset:0;pointer-events:none}
+.hc-prev .hc-fold{background:linear-gradient(90deg,transparent 50%,#0a1622e0 100%)}
+.hc-next .hc-fold{background:linear-gradient(-90deg,transparent 50%,#0a1622e0 100%)}
+.hc-prev:active,.hc-next:active{filter:blur(1px) brightness(.65)}
+.hc-cur:active{transform:translateY(-50%) scale(.96)}
+.hc-dots{position:relative;z-index:5;display:flex;justify-content:center;gap:6px;margin-top:14px}
+.hc-dots i{width:6px;height:6px;border-radius:50%;background:#ffffff30;transition:all .3s;cursor:pointer}
+.hc-dots i.on{width:20px;border-radius:3px;background:linear-gradient(90deg,#2ca8ff,#62dcff)}
+.hero-copy{position:relative;z-index:5;padding:14px 20px 20px}
 .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:1.2px;color:#a9dbff;
  background:#169eff16;border:1px solid #54bcff2a;padding:8px 11px;border-radius:999px}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan);flex:0 0 auto}
-.hero-title{font-size:38px;line-height:1.05;margin:16px 0 8px;letter-spacing:-1.2px}
+.hero-title{font-size:30px;line-height:1.08;margin:12px 0 6px;letter-spacing:-1px}
 .hero-original{font-size:11px;color:#a9b8c5;letter-spacing:.4px}
 .meta{display:flex;gap:9px;flex-wrap:wrap;color:#c0ccd7;font-size:11px;margin:11px 0}
 .meta b{color:#fff}.score{color:#ffc160}
-.desc{font-size:12px;color:#bcc7d2;line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin:0}
+.hero-copy .desc{display:none}
 .cta-row{display:flex;gap:10px;margin-top:16px}
 .primary{background:linear-gradient(135deg,#50c4ff,#1576ff);padding:13px 20px;border-radius:16px;font-size:13px;font-weight:800;box-shadow:0 10px 30px #147fff55;display:inline-flex;align-items:center;gap:6px}
 .primary:active{transform:scale(.97);filter:brightness(1.1)}
@@ -320,13 +329,17 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
   <section id="home" class="screen active">
     <div class="hero" id="hero">
       <div class="hero-bg" id="heroBg"><img class="himg" id="heroImg" alt=""><div class="hshade"></div></div>
-      <div class="hero-art"></div>
+      <div class="hero-stage" id="heroStage">
+        <div class="hc-card hc-prev" id="hcPrev" onclick="heroStep(-1)"><img id="hcPrevImg" alt=""><div class="hc-fold"></div></div>
+        <div class="hc-card hc-cur" id="hcCur" onclick="heroDetail()"><img id="hcCurImg" alt=""><div class="hc-glow"></div></div>
+        <div class="hc-card hc-next" id="hcNext" onclick="heroStep(1)"><img id="hcNextImg" alt=""><div class="hc-fold"></div></div>
+      </div>
+      <div class="hc-dots" id="hcDots"></div>
       <div class="hero-copy">
         <div class="eyebrow"><span class="dot"></span><span id="heroKicker">CINEMATIC PICK · 4K HDR</span></div>
         <div class="hero-title" id="heroTitle">加载中…</div>
         <div class="hero-original" id="heroOriginal"></div>
         <div class="meta" id="heroMeta"></div>
-        <div class="desc" id="heroDesc"></div>
         <div class="cta-row"><button class="primary" id="heroPlay" onclick="playSelected()">▶ 播放</button><button class="ghost" id="heroDetail" onclick="heroDetail()">详情</button></div>
       </div>
     </div>
@@ -770,18 +783,51 @@ function rowPoster(f){
 }
 
 /* ================= 渲染：首页 ================= */
-function heroFilm(){return state.cur||DECK[0]}
+function buildHeroList(){
+  return DECK.slice().sort(function(a,b){return (b.s||0)-(a.s||0)}).slice(0,7);
+}
+var HERO_LIST=[];
+function heroFilm(){return HERO_LIST[state.heroIdx]||DECK[0]}
 function renderHero(){
-  var f=heroFilm();
+  var n=HERO_LIST.length;if(!n)return;
+  var idx=((state.heroIdx%n)+n)%n;
+  var f=HERO_LIST[idx];
+  var prev=HERO_LIST[(idx-1+n)%n];
+  var next=HERO_LIST[(idx+1)%n];
+  // 三张卡片海报
+  function setCard(id,f2){var im=document.getElementById(id);if(im&&f2&&f2.p)im.src=f2.p}
+  setCard('hcCurImg',f);setCard('hcPrevImg',prev);setCard('hcNextImg',next);
+  // 文字
   $('heroTitle').textContent=f.t;
-  $('heroOriginal').textContent=f.o||f.t;
-  $('heroKicker').textContent=(f.m==='tv'?'SERIES':'MOVIE')+' · '+(f.src||'CINEMATIC PICK');
+  $('heroOriginal').textContent=f.o||'';
+  $('heroKicker').textContent=(f.m==='tv'?'SERIES':'MOVIE')+' · 精选推荐';
   $('heroMeta').innerHTML='<b>'+esc(f.y||'—')+'</b><span>·</span><span>'+esc(f.m==='tv'?'剧集':(f.d?f.d+' 分钟':'电影'))+'</span><span>·</span><span>'+esc((f.g||[]).slice(0,2).join(' / ')||'影视')+'</span><span class="score">★ '+(f.s||'—')+'</span>';
-  $('heroDesc').textContent=f.c||'沉浸式画面、细腻光影与史诗级声音设计。';
+  // 背景模糊海报
   var bg=backdropOf(f);
   var img=$('heroImg');
   if(bg){img.src=bg;img.style.display='block'}else img.style.display='none';
+  // 指示点
+  $('hcDots').innerHTML=HERO_LIST.map(function(_,i){return '<i class="'+(i===idx?'on':'')+'" onclick="heroGo('+i+')"></i>'}).join('');
   state.cur=f;
+}
+function heroStep(dir){
+  var n=HERO_LIST.length;if(!n)return;
+  state.heroIdx=((state.heroIdx+dir)%n+n)%n;
+  renderHero();restartHeroTimer();
+}
+function heroGo(i){state.heroIdx=i;renderHero();restartHeroTimer()}
+function restartHeroTimer(){
+  clearInterval(state.heroTimer);
+  state.heroTimer=setInterval(function(){heroStep(1)},5000);
+}
+function initHeroSwipe(){
+  var stage=$('heroStage');if(!stage||stage._swiped)return;stage._swiped=true;
+  var sx=0,sy=0;
+  stage.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+  stage.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){heroStep(dx<0?1:-1)}
+  },{passive:true});
 }
 function renderHomeRails(){
   var hist=ls(K_HIST,[]);
@@ -1556,12 +1602,16 @@ function updateClock(){$('clock').textContent=new Date().toLocaleTimeString('zh-
 /* ================= 初始化 ================= */
 function init(){
   DECK=DECK.map(normDeck);
+  HERO_LIST=buildHeroList();
+  state.heroIdx=Math.floor(Math.random()*HERO_LIST.length);
   // 读取本地缓存的趋势数据，二次打开秒出首页
   var cached=ls(K_CACHE,null);
   if(cached&&cached.list&&cached.list.length&&Date.now()-cached.ts<12*3600*1000){
     state.online=true;state.list=cached.list;
   }
   renderHero();
+  restartHeroTimer();
+  initHeroSwipe();
   renderHomeRails();
   renderLibrary();
   updateClock();setInterval(updateClock,30000);
@@ -1604,6 +1654,7 @@ window.openRes=openRes;window.runRes=runRes;window.copyResByIndex=copyResByIndex
 window.toggleSwitch=toggleSwitch;
 window.toast=toast;
 window.heroDetail=function(){var f=state.cur||DECK[0];state.curTouched=true;openDetail(f)};
+window.heroStep=heroStep;window.heroGo=heroGo;
 init();
 })();
 </script>
