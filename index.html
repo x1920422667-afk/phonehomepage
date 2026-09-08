@@ -411,6 +411,10 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
       <button class="ghost" id="detailRes" onclick="openRes()">⛁ 找资源</button>
       <button class="ghost" id="detailFav" onclick="toggleFav()">♡ 收藏</button>
     </div>
+    <div class="ep-section" id="epSection" style="display:none">
+      <div class="section-head"><div><div class="h2">选集</div><div class="sub" id="epSub">共 24 集</div></div></div>
+      <div class="ep-grid" id="epGrid"></div>
+    </div>
     <p class="detail-copy" id="detailCopy"></p>
     <div class="section" id="castSection" style="display:none">
       <div class="section-head"><div><div class="h2">主要演员</div></div></div>
@@ -500,7 +504,7 @@ var DECK=JSON.parse(document.getElementById('deck').textContent);
 var K_FAV='moviepro_favs_v2',K_HIST='moviepro_hist_v2',K_CACHE='moviepro_tmdb_cache_v2';
 
 /* ================= 状态 ================= */
-var state={cat:'all',sel:{},page:1,totalPages:1,list:[],loading:false,online:false,
+var state={cat:'all',sel:{},page:1,totalPages:1,list:[],loading:false,online:false,curEp:1,curSrc:null,curSrcList:[],srcLoading:false,
   cur:null,curTouched:false,curTime:0,curTotal:0,playing:false,timer:null,lib:'fav',sheetKind:'',resRows:[],resLoading:false};
 var memCache={};
 
@@ -878,6 +882,23 @@ function openDetail(f){
   $('detailCopy').textContent=f.c||'这部影片来自你的片单。点击播放即可开始观看，或通过「找资源」获取更多播放源。';
   $('detailFav').innerHTML=isFav(f)?'♥ 已收藏':'♡ 收藏';
   $('detailFav').style.color=isFav(f)?'#ff9b43':'';
+  // 选集（仅剧集）
+  var epSec=$('epSection'),epGrid=$('epGrid'),epSub=$('epSub');
+  if(f.m==='tv'){
+    var epCount=f.d&&f.d>0?f.d:24;
+    epSub.textContent='共 '+epCount+' 集';
+    epGrid.innerHTML='';
+    for(var e=1;e<=epCount;e++){
+      (function(ep){
+        var btn=document.createElement('div');
+        btn.className='ep-item'+(ep===state.curEp?' active':'');
+        btn.textContent='第 '+ep+' 集';
+        btn.onclick=function(){playEpisode(ep)};
+        epGrid.appendChild(btn);
+      })(e);
+    }
+    epSec.style.display='block';
+  }else epSec.style.display='none';
   var cast=$('detailCast'),castSec=$('castSection');
   if(f.cast&&f.cast.length){
     castSec.style.display='block';
@@ -912,6 +933,23 @@ function toggleFav(){
   save(K_FAV,favs.slice(0,200));
   $('detailFav').innerHTML=isFav(f)?'♥ 已收藏':'♡ 收藏';
   $('detailFav').style.color=isFav(f)?'#ff9b43':'';
+  // 选集（仅剧集）
+  var epSec=$('epSection'),epGrid=$('epGrid'),epSub=$('epSub');
+  if(f.m==='tv'){
+    var epCount=f.d&&f.d>0?f.d:24;
+    epSub.textContent='共 '+epCount+' 集';
+    epGrid.innerHTML='';
+    for(var e=1;e<=epCount;e++){
+      (function(ep){
+        var btn=document.createElement('div');
+        btn.className='ep-item'+(ep===state.curEp?' active':'');
+        btn.textContent='第 '+ep+' 集';
+        btn.onclick=function(){playEpisode(ep)};
+        epGrid.appendChild(btn);
+      })(e);
+    }
+    epSec.style.display='block';
+  }else epSec.style.display='none';
 }
 function addHist(f){
   var hist=ls(K_HIST,[]).filter(function(x){return (x.f&&x.f.t)!==f.t});
@@ -920,15 +958,75 @@ function addHist(f){
 }
 
 /* ================= 播放 ================= */
+function playEpisode(ep){
+  state.curEp=ep;
+  // 更新选集高亮
+  document.querySelectorAll('#epGrid .ep-item').forEach(function(el,i){
+    el.classList.toggle('active',(i+1)===ep);
+  });
+  playSelected();
+}
 function playSelected(){
   var f=state.cur;
-  if(!f){openPlayer();return}
+  if(!f){toast('请先选择影片');return}
   addHist(f);
   var sh=fm();
   if(sh&&typeof sh.search==='function'){
-    try{sh.search(f.t);toast('已交给 WebHome 搜索播放源');return}catch(e){}
+    try{sh.search(f.t+(f.m==='tv'?' 第'+state.curEp+'集':''));toast('已交给 WebHome 搜索播放源');return}catch(e){}
   }
-  openPlayer();
+  // 浏览器环境：自动搜网盘资源，弹源列表
+  searchAndShowSources(f);
+}
+function searchAndShowSources(f){
+  state.srcLoading=true;
+  state.curSrcList=[];
+  state.curSrc=null;
+  $('sheetTitle').textContent='选择播放源 · '+f.t+(f.m==='tv'?' 第'+state.curEp+'集':'');
+  $('sheetBody').innerHTML='<div class="empty" style="padding:24px 0">正在搜索网盘资源…</div><button class="loadbtn" style="margin-top:10px;max-width:220px" onclick="closeSheet();setTimeout(openPlayer,200)">跳过搜索，直接播放</button>';
+  openSheet();
+  var kw=f.t+(f.m==='tv'?' 第'+state.curEp+'集':'');
+  var url=PAN_API+'/api/search';
+  var body=JSON.stringify({kw:kw,res:'merge',src:'all',cloud_types:PAN_TYPES});
+  function post(){
+    var ff=fm();
+    if(ff&&typeof ff.req==='function'){
+      return ff.req(url,{method:'POST',headers:{'Content-Type':'application/json'},body:body,responseType:'json',timeout:10000});
+    }
+    var ctrl=new AbortController();
+    var timer=setTimeout(function(){ctrl.abort()},8000);
+    return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:body,cache:'no-store',signal:ctrl.signal}).then(function(r){clearTimeout(timer);if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).catch(function(e){clearTimeout(timer);throw e});
+  }
+  post().then(function(d){
+    state.srcLoading=false;
+    var byType=d&&d.data&&d.data.merged_by_type;
+    if(!byType){$('sheetBody').innerHTML='<div class="empty" style="padding:32px 0">没有找到相关资源<br><button class="loadbtn" style="margin-top:14px" onclick="openPlayer()">直接进入播放器</button></div>';return}
+    var rows=[];
+    PAN_TYPES.forEach(function(t){(byType[t]||[]).slice(0,5).forEach(function(it){rows.push({t:t,it:it})})});
+    if(!rows.length){$('sheetBody').innerHTML='<div class="empty" style="padding:32px 0">没有找到相关资源<br><button class="loadbtn" style="margin-top:14px" onclick="openPlayer()">直接进入播放器</button></div>';return}
+    rows.sort(function(a,b){return panScore(b.it.note||'')-panScore(a.it.note||'')});
+    state.curSrcList=rows.slice(0,20);
+    renderSrcPicker();
+  }).catch(function(){
+    state.srcLoading=false;
+    $('sheetBody').innerHTML='<div class="empty" style="padding:32px 0">资源搜索暂不可用<br><button class="loadbtn" style="margin-top:14px" onclick="openPlayer()">直接进入播放器</button></div>';
+  });
+}
+function renderSrcPicker(){
+  var rows=state.curSrcList;
+  $('sheetBody').innerHTML='<div class="sub" style="margin:0 2px 10px">找到 '+rows.length+' 个播放源，点击开始播放</div>'+
+    rows.map(function(r,i){
+      var tags=panTags(r.it.note||'');
+      var tagHtml=tags.length?('<div class="rtags">'+tags.map(function(x){return '<span class="rtag'+(x==='4K'||x==='蓝光'?' hot':'')+'">'+x+'</span>'}).join('')+'</div>'):'';
+      return '<div class="resitem" onclick="playFromSource('+i+')"><div class="rsrc">'+esc(PAN_LABEL[r.t]||r.t)+'</div><div style="flex:1;min-width:0"><div class="rname">'+esc(r.it.note||'')+'</div>'+tagHtml+'</div><span class="rcopy" style="background:#168fff22;color:#62dcff;border-color:#3aafff44">播放</span></div>';
+    }).join('');
+}
+function playFromSource(idx){
+  var r=state.curSrcList[idx];
+  if(!r){toast('源无效');return}
+  state.curSrc=r;
+  closeSheet();
+  toast('正在加载：'+(r.it.note||'').slice(0,20));
+  setTimeout(function(){openPlayer()},300);
 }
 function totalSec(f){
   if(f&&f.d>0)return f.d*60;
@@ -954,9 +1052,18 @@ function openPlayer(){
     else art.style.backgroundImage='';
     state.curTotal=totalSec(f);
     if(!state.curTime||state.curTime>state.curTotal)state.curTime=Math.min(762,Math.floor(state.curTotal*0.08));
-    // 填充播放源
-    var srcs=['在线源 1','在线源 2','网盘源','蓝光原盘'];
-    $('vSrcRow').innerHTML=srcs.map(function(s,i){return '<span class="vsrc'+(i===0?' active':'')+'" onclick="pickSrc(this,'+i+')">'+s+'</span>'}).join('');
+    // 填充播放源（真实搜到的源，或默认占位）
+    var srcList=state.curSrcList&&state.curSrcList.length?state.curSrcList:null;
+    if(srcList){
+      $('vSrcRow').innerHTML=srcList.slice(0,8).map(function(r,i){
+        var label=(PAN_LABEL[r.t]||r.t)+' · '+(r.it.note||'').slice(0,10);
+        var active=(state.curSrc&&state.curSrc.it===r.it)?' active':(i===0&&!state.curSrc?' active':'');
+        return '<span class="vsrc'+active+'" onclick="pickRealSrc(this,'+i+')" title="'+esc(r.it.note||'')+'">'+esc(label)+'</span>';
+      }).join('');
+    }else{
+      var srcs=['在线源 1','在线源 2','网盘源','蓝光原盘'];
+      $('vSrcRow').innerHTML=srcs.map(function(s,i){return '<span class="vsrc'+(i===0?' active':'')+'" onclick="pickSrc(this,'+i+')">'+s+'</span>'}).join('');
+    }
     // 填充选集（剧集显示，电影隐藏）
     var epRow=$('vEpRow');
     if(f.m==='tv'){
@@ -969,7 +1076,8 @@ function openPlayer(){
       epRow.style.display='none';
       $('pInfoCur').textContent='正片';
     }
-    $('pInfoSrc').textContent='在线源 1 · 在线预览';
+    var srcLabel=state.curSrc?(PAN_LABEL[state.curSrc.t]||state.curSrc.t)+' · '+(state.curSrc.it.note||'').slice(0,16):'在线预览';
+    $('pInfoSrc').textContent=srcLabel;
     $('prebadge').textContent='正在缓冲…';
     setTimeout(function(){$('prebadge').style.display='none'},1200);
   }
@@ -986,6 +1094,21 @@ function pickSrc(el,i){
   $('prebadge').textContent='切换至 '+el.textContent+'…';
   setTimeout(function(){$('prebadge').style.display='none'},1000);
   toast('已切换至 '+el.textContent);
+}
+function pickRealSrc(el,i){
+  document.querySelectorAll('#vSrcRow .vsrc').forEach(function(s){s.classList.remove('active')});
+  el.classList.add('active');
+  var r=state.curSrcList[i];
+  if(r){
+    state.curSrc=r;
+    $('pInfoSrc').textContent=(PAN_LABEL[r.t]||r.t)+' · '+(r.it.note||'').slice(0,16);
+    state.curTime=0;
+    updatePlayerUI();
+  }
+  $('prebadge').style.display='block';
+  $('prebadge').textContent='切换播放源…';
+  setTimeout(function(){$('prebadge').style.display='none'},1000);
+  toast('已切换播放源');
 }
 function pickEp(el,e){
   document.querySelectorAll('#vEpRow .vep').forEach(function(v){v.classList.remove('active')});
@@ -1095,7 +1218,7 @@ function doResSearch(kw,list){
     list.innerHTML=state.resRows.map(function(r,i){
       var tags=panTags(r.it.note||'');
       var tagHtml=tags.length?('<div class="rtags">'+tags.map(function(x){return '<span class="rtag'+(x==='4K'||x==='杜比视界'||x==='蓝光'?' hot':'')+'">'+x+'</span>'}).join('')+'</div>'):'';
-      return '<div class="resitem"><div class="rsrc">'+esc(PAN_LABEL[r.t]||r.t)+'</div><div><div class="rname">'+esc(r.it.note||'')+'</div>'+tagHtml+'</div><button class="rcopy" onclick="copyResByIndex('+i+')">复制</button></div>';
+      return '<div class="resitem"><div class="rsrc">'+esc(PAN_LABEL[r.t]||r.t)+'</div><div style="flex:1;min-width:0"><div class="rname">'+esc(r.it.note||'')+'</div>'+tagHtml+'</div><button class="rcopy" onclick="playResByIndex('+i+')" style="background:#168fff22;color:#62dcff;border-color:#3aafff44;margin-right:6px">播放</button><button class="rcopy" onclick="copyResByIndex('+i+')">复制</button></div>';
     }).join('');
   }).catch(function(){
     state.resLoading=false;
@@ -1118,6 +1241,15 @@ function panTags(t){
   if(/x265|hevc|高码/.test(s))tags.push('高码率');
   if(/国语|粤语|中字|双语/.test(s))tags.push('国语中字');
   return tags.slice(0,4);
+}
+function playResByIndex(i){
+  var r=state.resRows[i];
+  if(!r){toast('源无效');return}
+  state.curSrc=r;
+  state.curSrcList=state.resRows;
+  closeSheet();
+  toast('正在加载：'+(r.it.note||'').slice(0,20));
+  setTimeout(function(){openPlayer()},300);
 }
 function copyResByIndex(i){
   var r=state.resRows[i];
@@ -1196,7 +1328,9 @@ window.setLib=setLib;window.toggleFav=toggleFav;
 window.playSelected=playSelected;window.openPlayer=openPlayer;window.closePlayer=closePlayer;
 window.minimizePlayer=minimizePlayer;window.closeMini=closeMini;window.togglePlay=togglePlay;
 window.seekBy=seekBy;window.toggleSheet=toggleSheet;window.pickQuality=pickQuality;
-window.pickSrc=pickSrc;window.pickEp=pickEp;
+window.pickSrc=pickSrc;window.pickEp=pickEp;window.pickRealSrc=pickRealSrc;
+window.playEpisode=playEpisode;window.playFromSource=playFromSource;window.playResByIndex=playResByIndex;
+window.searchAndShowSources=searchAndShowSources;window.renderSrcPicker=renderSrcPicker;
 window.openRes=openRes;window.runRes=runRes;window.copyResByIndex=copyResByIndex;
 window.toggleSwitch=toggleSwitch;
 window.toast=toast;
