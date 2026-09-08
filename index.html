@@ -47,7 +47,7 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
 .hero{position:relative;overflow:hidden;min-height:492px;border-radius:28px;border:1px solid #ffffff14;
  box-shadow:0 28px 70px #0008;margin:10px 0 6px;background:#0b1724}
 .hero-bg{position:absolute;inset:0;background:
- linear-gradient(180deg,#00111f08 0%,#07111b10 40%,#061019d8 78%,#050b12 100%)}
+ linear-gradient(180deg,#00111f08 0%,#07111b10 40%,#061019d8 78%,#050b12 100%);pointer-events:none}
 .hero-bg .himg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.82}
 .hero-bg .hshade{position:absolute;inset:0;background:linear-gradient(180deg,#00111f08 0%,#07111b38 42%,#061019f2 82%,#050b12 100%)}
 .hero-art{display:none;position:absolute;right:-12%;top:-1%;width:78%;height:75%;
@@ -58,7 +58,7 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
  background:radial-gradient(circle at 52% 42%,#f5c57d 0 4%,transparent 5%),
  linear-gradient(90deg,transparent 44%,#b77b46 45% 49%,transparent 50%);
  transform:rotate(-8deg);opacity:.75;filter:blur(.5px)}
-.hero-copy{position:absolute;inset:auto 20px 20px 20px}
+.hero-copy{position:absolute;inset:auto 20px 20px 20px;z-index:5}
 .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:1.2px;color:#a9dbff;
  background:#169eff16;border:1px solid #54bcff2a;padding:8px 11px;border-radius:999px}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan);flex:0 0 auto}
@@ -119,6 +119,45 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
 .searchbar{display:flex;gap:9px;align-items:center;background:#ffffff0b;border:1px solid #ffffff14;border-radius:18px;padding:13px 15px}
 .searchbar input{flex:1;background:none;border:0;outline:0;color:#fff;font-size:14px;min-width:0}
 .searchbar input::placeholder{color:#778797}
+/* NOVA 风格搜索界面 */
+.search-topbar{display:flex;align-items:center;gap:10px;padding:calc(12px + var(--safe-top)) 18px 8px}
+.search-back{width:40px;height:40px;border-radius:13px;border:1px solid #ffffff14;background:#ffffff08;display:grid;place-items:center;font-size:20px;color:#cfd8e0}
+.search-topbar-title{font-size:18px;font-weight:900;letter-spacing:-.2px}
+.search-shell{position:sticky;top:0;z-index:8;padding:2px 18px 12px;background:linear-gradient(#050b12 78%,transparent)}
+.search-box{display:flex;align-items:center;gap:8px;padding:4px;border:1px solid #ffffff18;border-radius:17px;background:#ffffff08;box-shadow:0 12px 36px #0003}
+.search-input{flex:1;height:42px;border:0;background:transparent;outline:none;color:#fff;font-size:14px;padding:0 4px;min-width:0}
+.search-input::placeholder{color:#778797}
+.search-clear{width:34px;height:34px;border-radius:11px;border:1px solid #ffffff14;background:#ffffff06;color:#8a96a2;font-size:18px;display:grid;place-items:center;flex:0 0 auto}
+.search-submit{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#50c4ff,#1576ff);color:#fff;font-weight:950;font-size:16px;display:grid;place-items:center;flex:0 0 auto;box-shadow:0 6px 18px #147fff44}
+.search-hints{display:flex;gap:7px;overflow:auto;scrollbar-width:none;padding:10px 1px 0}
+.search-hints::-webkit-scrollbar{display:none}
+.search-hint{flex:0 0 auto;padding:7px 12px;border-radius:999px;border:1px solid #ffffff12;background:#ffffff05;color:#9aa6b2;font-size:11px;font-weight:700}
+.search-hint:active{background:#ffffff12}
+.search-content{padding:0 18px 120px}
+.recommend-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 0 10px}
+.recommend-title{font-size:16px;font-weight:900}
+.recommend-sub{display:block;margin-top:3px;color:#8a96a2;font-size:10px}
+.layout-switch{display:flex;gap:6px;padding:6px;border-radius:14px;border:1px solid #ffffff12;background:#ffffff05}
+.layout-btn{width:40px;height:36px;border-radius:10px;color:#8a96a2;font-size:15px;display:grid;place-items:center}
+.layout-btn.active{background:#168fff22;color:#62dcff;border:1px solid #3aafff44}
+.search-status{padding:10px 13px;border-radius:14px;border:1px solid #50c4ff18;background:#50c4ff08;color:#a8c8d8;font-size:11px;line-height:1.5;margin:0 0 12px}
+/* 搜索结果三种布局 */
+.search-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 10px}
+.search-grid .search-card{min-width:0;text-align:left}
+.search-grid .search-card .poster{width:100%;height:auto;aspect-ratio:2/3}
+.search-grid .card-name{margin-top:8px;font-size:13px;font-weight:750;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.search-grid .card-meta{font-size:10px;color:#8a96a2;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-list{display:grid;gap:8px}
+.search-list .search-row{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:11px;padding:9px;border:1px solid #ffffff0d;border-radius:15px;background:linear-gradient(145deg,#ffffff06,#ffffff02);text-align:left}
+.search-list .mini-poster{width:64px;height:90px;border-radius:11px;object-fit:cover;background:#111318;border:1px solid #ffffff12}
+.search-list .row-title{font-size:13px;font-weight:800;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.search-list .row-meta{margin-top:5px;color:#8a96a2;font-size:10px;line-height:1.45}
+.search-list .row-hot{font-size:11px;font-weight:900;color:#ffc160;white-space:nowrap;align-self:center}
+.search-text{display:grid;gap:4px}
+.search-text .text-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:13px 12px;border-bottom:1px solid #ffffff0a;text-align:left}
+.search-text .text-title{font-size:13px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-text .text-hot{font-size:11px;font-weight:900;color:#ffc160;white-space:nowrap}
+@media(min-width:520px){.search-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .chips{display:flex;gap:9px;overflow:auto;scrollbar-width:none;margin:14px 0;padding-bottom:2px}
 .chips::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;padding:9px 13px;border-radius:999px;border:1px solid #ffffff12;background:#ffffff07;color:#a7b2bd;font-size:11px;letter-spacing:.2px}
@@ -253,6 +292,12 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
 .rcopy:active{background:#ffffff20}
 /* ============ Toast ============ */
 .toast{position:fixed;left:50%;bottom:calc(128px + var(--safe-bottom));transform:translateX(-50%) translateY(15px);opacity:0;background:#0b1722ee;border:1px solid #ffffff18;padding:11px 16px;border-radius:999px;font-size:11px;z-index:200;transition:.22s;max-width:82vw;text-align:center;pointer-events:none}
+/* 播放器手势提示 */
+.gesture-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#000000cc;backdrop-filter:blur(12px);border:1px solid #ffffff22;border-radius:20px;padding:18px 26px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:10;min-width:120px;pointer-events:none}
+.gh-icon{font-size:32px;line-height:1}
+.gh-text{font-size:13px;font-weight:700;color:#fff;white-space:nowrap}
+.gh-bar{width:100px;height:4px;background:#ffffff22;border-radius:2px;overflow:hidden;margin-top:4px}
+.gh-bar i{display:block;height:100%;background:linear-gradient(90deg,#50c4ff,#1576ff);border-radius:2px;transition:width .1s}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 /* ============ 桌面预览 ============ */
 @media(min-width:700px){
@@ -266,7 +311,7 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
   <div class="status"><span id="clock">09:41</span><span>● ᯤ ▰</span></div>
   <div class="nav">
     <div class="brand"><span class="brandmark"><svg viewBox="0 0 24 24" fill="none"><path d="M8 5.5v13l11-6.5z" fill="#fff"/></svg></span><span>MoviePro</span></div>
-    <div class="nav-actions"><button class="iconbtn" onclick="go('search')" aria-label="搜索">⌕</button><button class="iconbtn" onclick="go('mine')" aria-label="更多">⋯</button></div>
+    <div class="nav-actions"><button class="iconbtn" onclick="go('search')" aria-label="搜索">⌕</button></div>
   </div>
 </header>
 
@@ -336,19 +381,34 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
 
   <!-- ========== 搜索 ========== -->
   <section id="search" class="screen">
-    <section class="section" style="margin-top:10px">
-      <div class="section-head"><div><div class="section-title">搜索</div><div class="sub" style="margin-top:6px">找到你想看的内容</div></div><button class="sub" onclick="go('discover')">取消</button></div>
-      <div class="searchbar"><span style="color:#778797">⌕</span><input id="searchInput" placeholder="输入片名、演员、导演..." autocomplete="off" oninput="onSearchInput()"></div>
-      <div class="section-head" style="margin-top:22px"><div><div class="h2">热门搜索</div></div></div>
-      <div class="chips">
-        <button class="chip" onclick="quickSearch('沙丘')">沙丘</button>
-        <button class="chip" onclick="quickSearch('奥本海默')">奥本海默</button>
-        <button class="chip" onclick="quickSearch('星际穿越')">星际穿越</button>
-        <button class="chip" onclick="quickSearch('蜘蛛侠')">蜘蛛侠</button>
-        <button class="chip" onclick="quickSearch('三体')">三体</button>
+    <div class="search-topbar"><button class="search-back" onclick="go('discover')">‹</button><div class="search-topbar-title">全站搜索</div></div>
+    <div class="search-shell">
+      <div class="search-box">
+        <span style="color:#5a9fc0;font-size:16px;padding:0 4px">⌕</span>
+        <input class="search-input" id="searchInput" placeholder="搜索电影、剧集、动漫、综艺…" autocomplete="off" oninput="onSearchInput()">
+        <button class="search-clear" id="searchClear" onclick="clearSearch()" style="display:none">×</button>
       </div>
-      <div id="searchResults"><div class="empty">开始输入，搜索你的下一部电影</div></div>
-    </section>
+      <div class="search-hints">
+        <button class="search-hint" onclick="quickSearch('沙丘')">沙丘</button>
+        <button class="search-hint" onclick="quickSearch('奥本海默')">奥本海默</button>
+        <button class="search-hint" onclick="quickSearch('星际穿越')">星际穿越</button>
+        <button class="search-hint" onclick="quickSearch('蜘蛛侠')">蜘蛛侠</button>
+        <button class="search-hint" onclick="quickSearch('科幻')">科幻</button>
+        <button class="search-hint" onclick="quickSearch('高分剧集')">高分剧集</button>
+      </div>
+    </div>
+    <div class="search-content">
+      <div class="recommend-head">
+        <div><div class="recommend-title" id="searchTitle">推荐影视</div><span class="recommend-sub" id="searchSub">根据片单精选、评分与新鲜度整理</span></div>
+        <div class="layout-switch">
+          <button class="layout-btn active" data-layout="grid" onclick="setSearchLayout('grid')">▦</button>
+          <button class="layout-btn" data-layout="list" onclick="setSearchLayout('list')">☷</button>
+          <button class="layout-btn" data-layout="text" onclick="setSearchLayout('text')">≡</button>
+        </div>
+      </div>
+      <div class="search-status" id="searchStatus">开始输入，搜索你的下一部电影</div>
+      <div id="searchResults"></div>
+    </div>
   </section>
 
   <!-- ========== 片库 ========== -->
@@ -368,12 +428,12 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
   <section id="settings" class="screen">
     <section class="section" style="margin-top:10px">
       <div class="section-head"><div><div class="section-title">设置</div><div class="sub" style="margin-top:6px">把观影体验调成你的样子</div></div></div>
-      <div class="list-row"><div class="list-left"><div class="row-icon">▶</div><div><div class="list-main">播放设置</div><div class="list-sub">默认画质、自动播放、跳过片头</div></div></div><span style="color:#5c6a78">›</span></div>
+      <div class="list-row" onclick="openPlayerSettings()" style="cursor:pointer"><div class="list-left"><div class="row-icon">▶</div><div><div class="list-main">播放设置</div><div class="list-sub">默认画质、自动播放、跳过片头</div></div></div><span style="color:#5c6a78">›</span></div>
       <div class="list-row"><div class="list-left"><div class="row-icon">◉</div><div><div class="list-main">画质增强</div><div class="list-sub">HDR → SDR 映射 / 超分辨率</div></div></div><div class="switch on" id="hdrSwitch" onclick="toggleSwitch(this)"><i></i></div></div>
-      <div class="list-row"><div class="list-left"><div class="row-icon">♪</div><div><div class="list-main">音频与字幕</div><div class="list-sub">默认音轨、字幕语言、样式</div></div></div><span style="color:#5c6a78">›</span></div>
-      <div class="list-row"><div class="list-left"><div class="row-icon">▣</div><div><div class="list-main">缓存与下载</div><div class="list-sub" id="cacheSub">空间占用 0 B</div></div></div><span style="color:#5c6a78">›</span></div>
-      <div class="list-row"><div class="list-left"><div class="row-icon">✦</div><div><div class="list-main">主题外观</div><div class="list-sub">Cinematic Aurora · 深色</div></div></div><span style="color:#5c6a78">›</span></div>
-      <div class="list-row"><div class="list-left"><div class="row-icon">i</div><div><div class="list-main">关于 MoviePro</div><div class="list-sub" id="aboutSub">原型 v2.0 · 手机影院优化版</div></div></div><span style="color:#5c6a78">›</span></div>
+      <div class="list-row" onclick="toast('音频与字幕将在播放时可切换')" style="cursor:pointer"><div class="list-left"><div class="row-icon">♪</div><div><div class="list-main">音频与字幕</div><div class="list-sub">默认音轨、字幕语言、样式</div></div></div><span style="color:#5c6a78">›</span></div>
+      <div class="list-row" onclick="clearCache()" style="cursor:pointer"><div class="list-left"><div class="row-icon">▣</div><div><div class="list-main">缓存与下载</div><div class="list-sub" id="cacheSub">空间占用 0 B</div></div></div><span style="color:#5c6a78">›</span></div>
+      <div class="list-row" onclick="toast('当前主题：Cinematic Aurora · 深色')" style="cursor:pointer"><div class="list-left"><div class="row-icon">✦</div><div><div class="list-main">主题外观</div><div class="list-sub">Cinematic Aurora · 深色</div></div></div><span style="color:#5c6a78">›</span></div>
+      <div class="list-row" onclick="toast('MoviePro v2.0 · 手机影院优化版\n片单 39 部 · 支持盘搜播放')" style="cursor:pointer"><div class="list-left"><div class="row-icon">i</div><div><div class="list-main">关于 MoviePro</div><div class="list-sub" id="aboutSub">原型 v2.0 · 手机影院优化版</div></div></div><span style="color:#5c6a78">›</span></div>
     </section>
   </section>
 </main>
@@ -441,6 +501,7 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
       </div>
     </div>
     <span class="prebadge" id="prebadge">正在缓冲…</span>
+    <div class="gesture-hint" id="gestureHint" style="display:none"><div class="gh-icon" id="ghIcon">⏩</div><div class="gh-text" id="ghText">00:00</div></div>
   </div>
   <div class="player-top">
     <div class="p-topline">
@@ -461,7 +522,7 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
     <div class="progress" id="pProgress"><i></i></div>
     <div class="controls">
       <button class="ctrl" onclick="seekBy(-10)">↺ 10</button>
-      <button class="ctrl" onclick="toast('音轨：中文（原声）')">♪</button>
+      <button class="ctrl" id="speedBtn" onclick="cycleSpeed()">1.0x</button>
       <button class="playbig" id="playBtn" onclick="togglePlay()">Ⅱ</button>
       <button class="ctrl" onclick="toggleSheet()">⚙</button>
       <button class="ctrl" onclick="minimizePlayer()">⌄</button>
@@ -491,6 +552,30 @@ var TMDB={key:'304ca56b1b7b57ca7a47d9b59946be94',base:'https://api.themoviedb.or
 var PAN_API='https://so.252035.xyz';
 var PAN_TYPES=['quark','aliyun','baidu','uc','tianyi','xunlei','123','115','mobile','guangya','magnet','ed2k'];
 var PAN_LABEL={quark:'夸克',aliyun:'阿里',baidu:'百度',uc:'UC',tianyi:'天翼',xunlei:'迅雷','123':'123盘',115:'115',mobile:'移动',guangya:'光韵',magnet:'磁力',ed2k:'电驴'};
+/* 统一盘搜：15秒超时 + 一次重试，兼容 fm.req 和浏览器 fetch */
+function panSearch(kw){
+  var url=PAN_API+'/api/search';
+  var body=JSON.stringify({kw:kw,res:'merge',src:'all',cloud_types:PAN_TYPES});
+  function once(){
+    var ff=fm();
+    if(ff&&typeof ff.req==='function'){
+      return ff.req(url,{method:'POST',headers:{'Content-Type':'application/json'},body:body,responseType:'json',timeout:15000});
+    }
+    var ctrl=new AbortController();
+    var timer=setTimeout(function(){ctrl.abort()},15000);
+    return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:body,cache:'no-store',signal:ctrl.signal})
+      .then(function(r){clearTimeout(timer);if(!r.ok)throw Error('HTTP '+r.status);return r.json()})
+      .catch(function(e){clearTimeout(timer);throw e});
+  }
+  return once().catch(function(){return once()});
+}
+function panParse(d){
+  var byType=d&&d.data&&d.data.merged_by_type;
+  if(!byType)return [];
+  var rows=[];
+  PAN_TYPES.forEach(function(t){(byType[t]||[]).forEach(function(it){rows.push({t:t,it:it})})});
+  return rows;
+}
 var PROXIES=['https://api.allorigins.win/raw?url=','https://corsproxy.io/?url='];
 var GENRES={'剧情':18,'喜剧':35,'爱情':10749,'动作':28,'科幻':878,'动画':16,'悬疑':9648,'犯罪':80,'恐怖':27,'奇幻':14,'纪录片':99,'冒险':12,'历史':36,'战争':10752,'家庭':10751,'惊悚':53,'音乐':10402,'西部':37};
 var GENRE_OPTS=['剧情','喜剧','爱情','动作','科幻','动画','悬疑','犯罪','恐怖','奇幻','纪录片','冒险','历史','战争','家庭','惊悚','音乐','西部'];
@@ -706,7 +791,7 @@ function renderHomeRails(){
     contEl.innerHTML=hist.slice(0,8).map(function(h){
       var f=h.f||h;
       var pct=h.total?Math.min(100,Math.round(h.cur/h.total*100)):0;
-      return '<div class="card" onclick="openDetail(\''+enc(f)+'\')">'+cardPoster(f,pct)+'<div class="card-name">'+esc(f.t)+'</div><div class="card-meta">已看 '+fmt(h.cur||0)+' / '+fmt(h.total||0)+'</div></div>';
+      return '<div class="card" onclick="playFromContinue(\''+enc(f)+'\')">'+cardPoster(f,pct)+'<div class="card-name">'+esc(f.t)+'</div><div class="card-meta">已看 '+fmt(h.cur||0)+' / '+fmt(h.total||0)+'</div></div>';
     }).join('');
   }else{
     $('contSub').textContent='还没有观看记录，去发现好片吧';
@@ -814,29 +899,62 @@ function resetFilter(){state.sel={};closeSheet();loadData(state.cat,state.sel,1)
 function openSheet(){$('mask').classList.add('show');$('sheetPanel').classList.add('show')}
 function closeSheet(){$('mask').classList.remove('show');$('sheetPanel').classList.remove('show')}
 
-/* ================= 搜索 ================= */
+/* ================= 搜索（NOVA 风格） ================= */
+state.searchLayout=state.searchLayout||'grid';
+function searchHot(f){var p=Number(f.popularity||f.hot||0);if(p>=1000)return(p/1000).toFixed(1)+'K';if(p>0)return Math.round(p);return f.s?'★ '+f.s:'—'}
+function renderSearchResults(rows,q){
+  var box=$('searchResults'),status=$('searchStatus'),title=$('searchTitle'),sub=$('searchSub');
+  if(!rows||!rows.length){
+    title.textContent=q?('搜索「'+q+'」'):'推荐影视';
+    sub.textContent=q?'没有找到匹配内容':'根据片单精选、评分与新鲜度整理';
+    status.textContent=q?'没有找到「'+esc(q)+'」相关内容，试试其他关键词':'开始输入，搜索你的下一部电影';
+    box.innerHTML='';return;
+  }
+  title.textContent=q?('搜索「'+q+'」'):'推荐影视';
+  sub.textContent=q?'找到 '+rows.length+' 项匹配结果':'根据片单精选、评分与新鲜度整理';
+  status.textContent='找到 '+rows.length+' 项影视内容 · 可切换三种展示方式';
+  var lay=state.searchLayout;
+  if(lay==='grid'){
+    box.className='search-grid';
+    box.innerHTML=rows.slice(0,36).map(function(f){
+      return '<div class="search-card" onclick="openDetail(\''+enc(f)+'\')">'+cardPoster(f)+'<div class="card-name">'+esc(f.t)+'</div><div class="card-meta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+' · '+esc(f.src||'片单精选')+'</div></div>';
+    }).join('');
+  }else if(lay==='list'){
+    box.className='search-list';
+    box.innerHTML=rows.slice(0,40).map(function(f){
+      var img=f.p?'<img class="mini-poster" loading="lazy" src="'+esc(f.p)+'" alt="" onerror="this.style.display=\'none\'">':'<div class="mini-poster p1"></div>';
+      return '<div class="search-row" onclick="openDetail(\''+enc(f)+'\')">'+img+'<span><span class="row-title">'+esc(f.t)+'</span><span class="row-meta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+' · '+esc(f.src||'片单精选')+'</span></span><span class="row-hot">'+searchHot(f)+'</span></div>';
+    }).join('');
+  }else{
+    box.className='search-text';
+    box.innerHTML=rows.slice(0,50).map(function(f){
+      return '<div class="text-row" onclick="openDetail(\''+enc(f)+'\')"><span class="text-title">'+esc(f.t)+'</span><span class="text-hot">'+searchHot(f)+'</span></div>';
+    }).join('');
+  }
+}
 var doSearch=debounce(function(){
   var q=$('searchInput').value.trim();
-  if(!q){$('searchResults').innerHTML='<div class="empty">开始输入，搜索你的下一部电影</div>';return}
+  $('searchClear').style.display=q?'grid':'none';
+  if(!q){renderSearchResults(recommendationList(),'');return}
   var local=localSearch(q);
-  $('searchResults').innerHTML='<div class="empty" style="padding:30px 0">正在搜索…</div>';
+  $('searchStatus').textContent='正在搜索 TMDB + 已加载片单…';
+  $('searchResults').innerHTML='<div class="loading" style="padding:24px 12px;text-align:center;color:#8a96a2;font-size:11px">正在搜索全站影视</div>';
   fetchSearch(q).then(function(d){
     var rows=d.list.slice(0,50);
     if(!rows.length&&local.length)rows=local;
-    if(!rows.length){$('searchResults').innerHTML='<div class="empty">没有找到「'+esc(q)+'」相关内容</div>';return}
-    $('searchResults').innerHTML=rows.map(function(f){
-      return '<div class="search-result" onclick="openDetail(\''+enc(f)+'\')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+'<br>'+esc(f.src||'片单精选')+'</div></div><span class="rscore">★ '+(f.s||'—')+'</span></div>';
-    }).join('');
+    renderSearchResults(rows,q);
   }).catch(function(){
-    if(local.length){
-      $('searchResults').innerHTML=local.map(function(f){
-        return '<div class="search-result" onclick="openDetail(\''+enc(f)+'\')">'+rowPoster(f)+'<div><div class="rtitle">'+esc(f.t)+'</div><div class="rmeta">'+esc(f.y||'—')+' · '+esc(f.m==='tv'?'剧集':'电影')+'</div></div><span class="rscore">★ '+(f.s||'—')+'</span></div>';
-      }).join('');
-    }else $('searchResults').innerHTML='<div class="empty">没有找到「'+esc(q)+'」相关内容</div>';
+    renderSearchResults(local.length?local:[],q);
   });
 },300);
 function onSearchInput(){doSearch()}
-function quickSearch(q){go('search');$('searchInput').value=q;doSearch()}
+function quickSearch(q){go('search');setTimeout(function(){$('searchInput').value=q;doSearch()},50)}
+function clearSearch(){$('searchInput').value='';$('searchInput').focus();$('searchClear').style.display='none';renderSearchResults(recommendationList(),'')}
+function setSearchLayout(mode){state.searchLayout=mode;document.querySelectorAll('.layout-btn').forEach(function(b){b.classList.toggle('active',b.dataset.layout===mode)});var q=$('searchInput').value.trim();if(q)doSearch();else renderSearchResults(recommendationList(),'')}
+function recommendationList(){
+  var base=DECK.slice();
+  return base.sort(function(a,b){var sa=Number(a.s||0),sb=Number(b.s||0);var ya=Number(String(a.y||'').slice(0,4))||0,yb=Number(String(b.y||'').slice(0,4))||0;return(sb-sa)+(yb-ya)*0.1}).slice(0,36);
+}
 
 /* ================= 片库 ================= */
 function setLib(k){
@@ -985,30 +1103,16 @@ function searchAndShowSources(f){
   $('sheetBody').innerHTML='<div class="empty" style="padding:24px 0">正在搜索网盘资源…</div><button class="loadbtn" style="margin-top:10px;max-width:220px" onclick="closeSheet();setTimeout(openPlayer,200)">跳过搜索，直接播放</button>';
   openSheet();
   var kw=f.t+(f.m==='tv'?' 第'+state.curEp+'集':'');
-  var url=PAN_API+'/api/search';
-  var body=JSON.stringify({kw:kw,res:'merge',src:'all',cloud_types:PAN_TYPES});
-  function post(){
-    var ff=fm();
-    if(ff&&typeof ff.req==='function'){
-      return ff.req(url,{method:'POST',headers:{'Content-Type':'application/json'},body:body,responseType:'json',timeout:10000});
-    }
-    var ctrl=new AbortController();
-    var timer=setTimeout(function(){ctrl.abort()},8000);
-    return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:body,cache:'no-store',signal:ctrl.signal}).then(function(r){clearTimeout(timer);if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).catch(function(e){clearTimeout(timer);throw e});
-  }
-  post().then(function(d){
+  panSearch(kw).then(function(d){
     state.srcLoading=false;
-    var byType=d&&d.data&&d.data.merged_by_type;
-    if(!byType){$('sheetBody').innerHTML='<div class="empty" style="padding:32px 0">没有找到相关资源<br><button class="loadbtn" style="margin-top:14px" onclick="openPlayer()">直接进入播放器</button></div>';return}
-    var rows=[];
-    PAN_TYPES.forEach(function(t){(byType[t]||[]).slice(0,5).forEach(function(it){rows.push({t:t,it:it})})});
+    var rows=panParse(d);
     if(!rows.length){$('sheetBody').innerHTML='<div class="empty" style="padding:32px 0">没有找到相关资源<br><button class="loadbtn" style="margin-top:14px" onclick="openPlayer()">直接进入播放器</button></div>';return}
     rows.sort(function(a,b){return panScore(b.it.note||'')-panScore(a.it.note||'')});
     state.curSrcList=rows.slice(0,20);
     renderSrcPicker();
   }).catch(function(){
     state.srcLoading=false;
-    $('sheetBody').innerHTML='<div class="empty" style="padding:32px 0">资源搜索暂不可用<br><button class="loadbtn" style="margin-top:14px" onclick="openPlayer()">直接进入播放器</button></div>';
+    $('sheetBody').innerHTML='<div class="empty" style="padding:32px 0">资源搜索暂不可用（网络超时）<br><button class="loadbtn" style="margin-top:14px" onclick="openPlayer()">直接进入播放器</button></div>';
   });
 }
 function renderSrcPicker(){
@@ -1051,7 +1155,29 @@ function openPlayer(){
     if(f.p)art.style.backgroundImage='url("'+f.p+'")';
     else art.style.backgroundImage='';
     state.curTotal=totalSec(f);
-    if(!state.curTime||state.curTime>state.curTotal)state.curTime=Math.min(762,Math.floor(state.curTotal*0.08));
+    // 播放记忆：从历史记录恢复进度
+    var hist=findHist(f);
+    if(hist&&hist.cur>10&&hist.cur<hist.total-10){
+      state.curTime=hist.cur;
+      toast('已从 '+fmt(hist.cur)+' 继续播放');
+    }else if(!state.curTime||state.curTime>state.curTotal){
+      state.curTime=Math.min(762,Math.floor(state.curTotal*0.08));
+    }
+    // 倍速初始化
+    if(!state.speed)state.speed=1.0;
+    var sbtn=$('speedBtn');if(sbtn)sbtn.textContent=state.speed.toFixed(state.speed%1===0?1:2)+'x';
+    // 恢复画质增强设置
+    try{
+      var hdr=localStorage.getItem('moviepro_hdr_enhance');
+      var hsw=$('hdrSwitch');if(hsw&&hdr==='0')hsw.classList.remove('on');
+      var dq=localStorage.getItem('moviepro_default_quality');
+      if(dq){
+        state.defaultQuality=dq;
+        $('vBadge').textContent=(f.m==='tv'?'剧集':'电影')+' · '+dq;
+      }
+    }catch(e){}
+    // 初始化手势
+    initGestures();
     // 填充播放源（真实搜到的源，或默认占位）
     var srcList=state.curSrcList&&state.curSrcList.length?state.curSrcList:null;
     if(srcList){
@@ -1139,13 +1265,7 @@ function togglePlay(){
   var vc=$('vCenter');
   if(vc)vc.style.display=state.playing?'none':'grid';
   if(state.playing){
-    clearInterval(state.timer);
-    state.timer=setInterval(function(){
-      state.curTime=Math.min(state.curTotal,state.curTime+1);
-      updatePlayerUI();
-      if($('mini').classList.contains('show'))updateMiniUI();
-      if(state.curTime>=state.curTotal){pausePlay();toast('预览结束')}
-    },1000);
+    startPlayTimer();
     toast('正在播放');
   }else{pausePlay();toast('已暂停')}
 }
@@ -1171,7 +1291,151 @@ function toggleSheet(){$('sheet').classList.toggle('show')}
 function pickQuality(el){
   document.querySelectorAll('#sheet .quality').forEach(function(q){q.classList.remove('active')});
   el.classList.add('active');
+  try{localStorage.setItem('moviepro_default_quality',el.dataset.q)}catch(e){}
+  state.defaultQuality=el.dataset.q;
   toast('已切换至 '+el.dataset.q+' 画质');
+}
+
+/* ================= 倍速播放 ================= */
+var SPEEDS=[0.5,1.0,1.25,1.5,2.0];
+function cycleSpeed(){
+  var idx=SPEEDS.indexOf(state.speed||1.0);
+  var next=SPEEDS[(idx+1)%SPEEDS.length];
+  setSpeed(next);
+}
+function setSpeed(s){
+  state.speed=s;
+  var btn=$('speedBtn');
+  if(btn)btn.textContent=s.toFixed(s%1===0?1:2)+'x';
+  toast('倍速 '+s.toFixed(s%1===0?1:2)+'x');
+  if(state.playing){clearInterval(state.timer);startPlayTimer()}
+}
+function startPlayTimer(){
+  clearInterval(state.timer);
+  var interval=Math.round(1000/(state.speed||1.0));
+  state._saveTick=0;
+  state.timer=setInterval(function(){
+    state.curTime=Math.min(state.curTotal,state.curTime+1);
+    updatePlayerUI();
+    if($('mini').classList.contains('show'))updateMiniUI();
+    if(state.curTime>=state.curTotal){pausePlay();toast('预览结束')}
+    state._saveTick++;
+    if(state._saveTick>=10&&state.cur){state._saveTick=0;addHist(state.cur)}
+  },interval);
+}
+
+/* ================= 播放器手势控制 ================= */
+var gstate={active:false,mode:null,sx:0,sy:0,st:0,scur:0,svol:50,sbri:70,lt:0,lx:0,ly:0,pressTimer:null,longPress:false};
+function initGestures(){
+  var v=$('video');
+  if(!v||v._ginit)return;
+  v._ginit=true;
+  v.addEventListener('touchstart',onTouchStart,{passive:false});
+  v.addEventListener('touchmove',onTouchMove,{passive:false});
+  v.addEventListener('touchend',onTouchEnd,{passive:false});
+}
+function onTouchStart(e){
+  if(e.touches.length!==1)return;
+  var t=e.touches[0];
+  var now=Date.now();
+  gstate.sx=t.clientX;gstate.sy=t.clientY;gstate.st=now;
+  gstate.scur=state.curTime;gstate.active=true;gstate.mode=null;
+  gstate.longPress=false;
+  var vrect=$('video').getBoundingClientRect();
+  gstate.side=(t.clientX-vrect.left)<vrect.width/2?'left':'right';
+  // 双击检测
+  if(now-gstate.lt<300&&Math.abs(t.clientX-gstate.lx)<50&&Math.abs(t.clientY-gstate.ly)<50){
+    gstate.active=false;
+    togglePlay();
+    gstate.lt=0;return;
+  }
+  gstate.lt=now;gstate.lx=t.clientX;gstate.ly=t.clientY;
+  // 长按倍速
+  gstate.pressTimer=setTimeout(function(){
+    if(gstate.active&&!gstate.mode){
+      gstate.longPress=true;
+      if(!state.playing)togglePlay();
+      setSpeed(2.0);
+      showGestureHint('⏩','2.0x 倍速');
+    }
+  },500);
+}
+function onTouchMove(e){
+  if(!gstate.active||e.touches.length!==1)return;
+  var t=e.touches[0];
+  var dx=t.clientX-gstate.sx,dy=t.clientY-gstate.sy;
+  if(!gstate.mode){
+    if(Math.abs(dx)>20&&Math.abs(dx)>Math.abs(dy)){
+      gstate.mode='seek';clearTimeout(gstate.pressTimer);
+    }else if(Math.abs(dy)>20&&Math.abs(dy)>Math.abs(dx)){
+      gstate.mode=gstate.side==='left'?'brightness':'volume';clearTimeout(gstate.pressTimer);
+    }
+  }
+  if(gstate.mode==='seek'){
+    e.preventDefault();
+    var delta=Math.round(dx/4);
+    var nt=Math.max(0,Math.min(state.curTotal,gstate.scur+delta));
+    state.curTime=nt;updatePlayerUI();
+    showGestureHint(delta>=0?'⏩':'⏪',fmt(nt)+' / '+fmt(state.curTotal));
+  }else if(gstate.mode==='volume'){
+    e.preventDefault();
+    gstate.svol=Math.max(0,Math.min(100,gstate.svol-Math.round(dy/3)));
+    showGestureHint('🔊','音量 '+gstate.svol+'%',gstate.svol);
+  }else if(gstate.mode==='brightness'){
+    e.preventDefault();
+    gstate.sbri=Math.max(0,Math.min(100,gstate.sbri-Math.round(dy/3)));
+    showGestureHint('☀','亮度 '+gstate.sbri+'%',gstate.sbri);
+  }
+}
+function onTouchEnd(e){
+  if(gstate.pressTimer){clearTimeout(gstate.pressTimer);gstate.pressTimer=null}
+  if(gstate.longPress){
+    setSpeed(1.0);
+    hideGestureHint();
+    gstate.active=false;gstate.longPress=false;return;
+  }
+  if(gstate.mode){hideGestureHint();gstate.active=false;gstate.mode=null;return}
+  gstate.active=false;
+}
+function showGestureHint(icon,text,pct){
+  var h=$('gestureHint');if(!h)return;
+  h.style.display='flex';
+  $('ghIcon').textContent=icon;
+  $('ghText').textContent=text;
+  if(typeof pct==='number'){
+    if(!h.querySelector('.gh-bar')){
+      var bar=document.createElement('div');bar.className='gh-bar';bar.innerHTML='<i></i>';h.appendChild(bar);
+    }
+    h.querySelector('.gh-bar i').style.width=pct+'%';
+  }else{
+    var b=h.querySelector('.gh-bar');if(b)b.remove();
+  }
+}
+function hideGestureHint(){var h=$('gestureHint');if(h)h.style.display='none'}
+
+/* ================= 播放记忆 ================= */
+function findHist(f){
+  if(!f)return null;
+  var hist=ls(K_HIST,[]);
+  for(var i=0;i<hist.length;i++){
+    if(hist[i].f&&hist[i].f.t===f.t)return hist[i];
+  }
+  return null;
+}
+function saveProgress(){
+  if(!state.cur)return;
+  addHist(state.cur);
+}
+function playFromContinue(f){
+  state.cur=f;state.curTouched=true;
+  var h=findHist(f);
+  if(h&&h.cur>0&&h.cur<h.total){
+    state.curTime=h.cur;state.curTotal=h.total||totalSec(f);
+  }else{
+    state.curTime=0;state.curTotal=totalSec(f);
+  }
+  state.curEp=1;
+  searchAndShowSources(f);
 }
 
 /* ================= 找资源 ================= */
@@ -1193,25 +1457,9 @@ function runRes(){
   doResSearch(kw,list);
 }
 function doResSearch(kw,list){
-  var f=fm();
-  var url=PAN_API+'/api/search';
-  function post(){
-    var p;
-    if(f&&typeof f.req==='function'){
-      p=f.req(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kw:kw,res:'merge',src:'all',cloud_types:PAN_TYPES}),responseType:'json',timeout:20000});
-    }else{
-      p=fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kw:kw,res:'merge',src:'all',cloud_types:PAN_TYPES}),cache:'no-store'}).then(function(r){if(!r.ok)throw Error('HTTP '+r.status);return r.json()});
-    }
-    return p;
-  }
-  post().then(function(d){
+  panSearch(kw).then(function(d){
     state.resLoading=false;
-    var byType=d&&d.data&&d.data.merged_by_type;
-    if(!byType){list.innerHTML='<div class="empty" style="padding:24px 0">没有找到相关资源，换个关键词试试</div>';return}
-    var rows=[];
-    PAN_TYPES.forEach(function(t){
-      (byType[t]||[]).slice(0,4).forEach(function(it){rows.push({t:t,it:it})});
-    });
+    var rows=panParse(d);
     if(!rows.length){list.innerHTML='<div class="empty" style="padding:24px 0">没有找到相关资源，换个关键词试试</div>';return}
     rows.sort(function(a,b){return panScore(b.it.note||'')-panScore(a.it.note||'')});
     state.resRows=rows.slice(0,30);
@@ -1222,7 +1470,7 @@ function doResSearch(kw,list){
     }).join('');
   }).catch(function(){
     state.resLoading=false;
-    list.innerHTML='<div class="empty" style="padding:24px 0">资源搜索服务暂不可用<br>请稍后再试或使用 WebHome 原生搜索</div>';
+    list.innerHTML='<div class="empty" style="padding:24px 0">资源搜索服务暂不可用（网络超时）<br>请稍后再试或使用 WebHome 原生搜索</div>';
   });
 }
 function panScore(t){
@@ -1272,7 +1520,19 @@ function fallbackCopy(txt){
 /* ================= 设置 ================= */
 function toggleSwitch(el){
   el.classList.toggle('on');
-  toast(el.classList.contains('on')?'画质增强已开启':'画质增强已关闭');
+  var on=el.classList.contains('on');
+  try{localStorage.setItem('moviepro_hdr_enhance',on?'1':'0')}catch(e){}
+  toast(on?'画质增强已开启':'画质增强已关闭');
+}
+function openPlayerSettings(){
+  go('settings');
+  setTimeout(function(){toggleSheet()},300);
+}
+function clearCache(){
+  try{
+    localStorage.removeItem('moviepro_tmdb_cache_v2');
+    toast('缓存已清除');
+  }catch(e){toast('清除失败')}
 }
 
 /* ================= 导航 ================= */
@@ -1282,6 +1542,13 @@ function go(page){
   document.querySelectorAll('.navitem').forEach(function(n){n.classList.toggle('active',n.dataset.page===page)});
   if(page==='home')renderHomeRails();
   if(page==='lib')renderLibrary();
+  if(page==='settings'){
+    try{
+      var hdr=localStorage.getItem('moviepro_hdr_enhance');
+      var hsw=$('hdrSwitch');if(hsw){if(hdr==='0')hsw.classList.remove('on');else hsw.classList.add('on')}
+    }catch(e){}
+  }
+  if(page==='search'){renderSearchResults(recommendationList(),'');setTimeout(function(){var i=$('searchInput');if(i)i.focus()},80)}
   window.scrollTo({top:0});
 }
 function updateClock(){$('clock').textContent=new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false})}
@@ -1323,11 +1590,13 @@ window.go=go;window.openDetail=openDetail;window.closeDetail=closeDetail;
 window.goDiscover=goDiscover;window.setCat=setCat;window.loadMore=loadMore;
 window.openFilter=openFilter;window.pickFilter=pickFilter;window.resetFilter=resetFilter;
 window.closeSheet=closeSheet;
-window.onSearchInput=onSearchInput;window.quickSearch=quickSearch;
+window.onSearchInput=onSearchInput;window.quickSearch=quickSearch;window.clearSearch=clearSearch;window.setSearchLayout=setSearchLayout;
 window.setLib=setLib;window.toggleFav=toggleFav;
 window.playSelected=playSelected;window.openPlayer=openPlayer;window.closePlayer=closePlayer;
 window.minimizePlayer=minimizePlayer;window.closeMini=closeMini;window.togglePlay=togglePlay;
 window.seekBy=seekBy;window.toggleSheet=toggleSheet;window.pickQuality=pickQuality;
+window.cycleSpeed=cycleSpeed;window.setSpeed=setSpeed;window.playFromContinue=playFromContinue;
+window.openPlayerSettings=openPlayerSettings;window.clearCache=clearCache;
 window.pickSrc=pickSrc;window.pickEp=pickEp;window.pickRealSrc=pickRealSrc;
 window.playEpisode=playEpisode;window.playFromSource=playFromSource;window.playResByIndex=playResByIndex;
 window.searchAndShowSources=searchAndShowSources;window.renderSrcPicker=renderSrcPicker;
