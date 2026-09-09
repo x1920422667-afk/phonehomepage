@@ -200,9 +200,16 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
 .switch.on{background:#147cff}.switch.on i{background:white;transform:translateX(20px)}
 /* ============ 详情页 ============ */
 .detail{position:fixed;inset:0;z-index:70;background:#050b12;display:none;overflow:auto;-webkit-overflow-scrolling:touch;max-width:620px;margin:0 auto}.detail.show{display:block}
-.detail-art{height:448px;position:relative;background:linear-gradient(180deg,#07152200,#050b12),linear-gradient(145deg,#24556e,#09131d 56%,#8f5a31)}
-.detail-art .dimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.detail-art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#050b1200 52%,#050b12 100%)}
+.detail-art{height:440px;position:relative;overflow:hidden;background:linear-gradient(180deg,#07152200,#050b12),linear-gradient(145deg,#24556e,#09131d 56%,#8f5a31)}
+.detail-art .dimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.08)}
+.detail-art .dposter{position:absolute;right:18px;bottom:64px;width:108px;height:162px;object-fit:cover;border-radius:14px;
+ border:1px solid #ffffff2e;box-shadow:0 20px 48px #000d;z-index:2;
+ -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16%);mask-image:linear-gradient(90deg,transparent 0,#000 16%)}
+.detail-art .dveil{position:absolute;inset:0;z-index:1;background:
+ radial-gradient(120% 80% at 28% 16%,#1aa6ff16 0%,transparent 55%),
+ linear-gradient(90deg,#050b12ea 0%,#050b1248 44%,transparent 74%),
+ linear-gradient(180deg,#050b1230 0%,transparent 42%,#050b12 100%)}
+.detail-art:after{content:"";position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,#050b1200 52%,#050b12 100%)}
 .back{position:fixed;top:calc(10px + var(--safe-top));left:max(14px,calc(50% - 310px + 14px));z-index:8;width:42px;height:42px;border-radius:50%;background:#06111dcc;border:1px solid #ffffff18;display:grid;place-items:center;font-size:20px}
 .back:active{background:#0c1d2e}
 .detail-body{margin:-76px 18px 34px;position:relative;z-index:3}
@@ -340,7 +347,7 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
         <div class="hero-title" id="heroTitle">加载中…</div>
         <div class="hero-original" id="heroOriginal"></div>
         <div class="meta" id="heroMeta"></div>
-        <div class="cta-row"><button class="primary" id="heroPlay" onclick="playSelected()">▶ 播放</button><button class="ghost" id="heroDetail" onclick="heroDetail()">详情</button></div>
+        <div class="cta-row"><button class="primary" id="heroPlay" onclick="heroPlay()">▶ 播放</button><button class="ghost" id="heroDetail" onclick="heroDetail()">详情</button></div>
       </div>
     </div>
 
@@ -472,7 +479,7 @@ main{padding:0 16px calc(120px + var(--safe-bottom))}
 <!-- 详情 -->
 <div class="detail" id="detail">
   <button class="back" onclick="closeDetail()">‹</button>
-  <div class="detail-art" id="detailArt"><img class="dimg" id="detailImg" alt=""></div>
+  <div class="detail-art" id="detailArt"><img class="dimg" id="detailImg" alt=""><img class="dposter" id="detailPoster" alt=""><div class="dveil"></div></div>
   <div class="detail-body">
     <div class="eyebrow" id="detailKicker"><span class="dot"></span><span>MOVIE · 4K HDR</span></div>
     <h1 class="detail-title" id="detailTitle">—</h1>
@@ -808,7 +815,7 @@ function renderHero(){
   if(bg){img.src=bg;img.style.display='block'}else img.style.display='none';
   // 指示点
   $('hcDots').innerHTML=HERO_LIST.map(function(_,i){return '<i class="'+(i===idx?'on':'')+'" onclick="heroGo('+i+')"></i>'}).join('');
-  state.cur=f;
+  state.heroFilm=f;
 }
 function heroStep(dir){
   var n=HERO_LIST.length;if(!n)return;
@@ -890,7 +897,7 @@ function loadData(cat,sel,page){
     state.totalPages=d.totalPages;state.loading=false;
     renderDiscover();
     if(state.cat==='all'&&state.page===1){
-      if(!state.curTouched&&d.list.length){state.cur=d.list[0];renderHero()}
+      if(!state.curTouched&&d.list.length){state.heroFilm=d.list[0];renderHero()}
       save(K_CACHE,{list:d.list.slice(0,12),ts:Date.now()});
       renderHomeRails();
     }
@@ -1031,12 +1038,16 @@ function renderLibrary(){
 /* ================= 详情 ================= */
 function openDetail(f){
   if(typeof f==='string'){try{f=JSON.parse(decodeURIComponent(f))}catch(e){return}}
-  state.cur=f;state.curTouched=true;
+  state.cur=f;state.detailFilm=f;state.curTouched=true;
+  clearInterval(state.heroTimer);
   var img=$('detailImg');
   var bg=backdropOf(f);
-  img.style.display=bg?'block':'none';
-  if(bg)img.src=bg;
-  else img.removeAttribute('src');
+  if(bg){img.src=bg;img.style.display='block'}
+  else if(f.p){img.src=f.p;img.style.display='block'}
+  else img.style.display='none';
+  img.onerror=function(){if(f.p&&this.src!==f.p){this.src=f.p}else{this.style.display='none'}};
+  var dp=$('detailPoster');
+  if(dp){if(f.p){dp.src=f.p;dp.style.display='block'}else{dp.removeAttribute('src');dp.style.display='none'}}
   $('detailTitle').textContent=f.t;
   $('detailOriginal').textContent=f.o||'';
   $('detailKicker').innerHTML='<span class="dot"></span><span>'+esc(f.m==='tv'?'SERIES · 剧集':'MOVIE · 电影')+'</span>';
@@ -1087,7 +1098,7 @@ function related(f){
   if(out.length<8)out=out.concat(deck.filter(function(x){return x.t!==f.t&&out.indexOf(x)<0}));
   return out.slice(0,8);
 }
-function closeDetail(){$('detail').classList.remove('show');document.body.style.overflow=''}
+function closeDetail(){$('detail').classList.remove('show');document.body.style.overflow='';restartHeroTimer()}
 function isFav(f){return ls(K_FAV,[]).some(function(x){return x.t===f.t})}
 function toggleFav(){
   var f=state.cur;if(!f)return;
@@ -1130,8 +1141,19 @@ function playEpisode(ep){
   });
   playSelected();
 }
+function heroPlay(){
+  var f=state.heroFilm||state.cur;
+  if(!f){toast('请先选择影片');return}
+  state.cur=f;state.detailFilm=f;
+  addHist(f);
+  var sh=fm();
+  if(sh&&typeof sh.search==='function'){
+    try{sh.search(f.t+(f.m==='tv'?' 第'+state.curEp+'集':''));toast('已交给 WebHome 搜索播放源');return}catch(e){}
+  }
+  searchAndShowSources(f);
+}
 function playSelected(){
-  var f=state.cur;
+  var f=state.detailFilm||state.cur;
   if(!f){toast('请先选择影片');return}
   addHist(f);
   var sh=fm();
@@ -1183,7 +1205,8 @@ function totalSec(f){
   return f&&f.m==='tv'?2400:9960;
 }
 function openPlayer(){
-  var f=state.cur;
+  var f=state.detailFilm||state.cur;
+  clearInterval(state.heroTimer);
   if(f){
     $('ptitle').textContent=f.t;
     $('psmall').textContent=(f.m==='tv'?'剧集 · ':'')+(f.src||'在线预览')+' · '+(f.s?'★ '+f.s:'');
@@ -1294,7 +1317,7 @@ function closePlayer(){
   $('player').classList.remove('show');
   $('sheet').classList.remove('show');
   if(state.cur)addHist(state.cur);
-  pausePlay();
+  pausePlay();restartHeroTimer();
 }
 function minimizePlayer(){
   $('player').classList.remove('show');
@@ -1303,7 +1326,7 @@ function minimizePlayer(){
   if(state.cur)addHist(state.cur);
   updateMiniUI();
 }
-function closeMini(){$('mini').classList.remove('show');pausePlay()}
+function closeMini(){$('mini').classList.remove('show');pausePlay();restartHeroTimer()}
 function togglePlay(){
   state.playing=!state.playing;
   $('playBtn').textContent=state.playing?'Ⅱ':'▶';
@@ -1473,7 +1496,7 @@ function saveProgress(){
   addHist(state.cur);
 }
 function playFromContinue(f){
-  state.cur=f;state.curTouched=true;
+  state.cur=f;state.detailFilm=f;state.curTouched=true;
   var h=findHist(f);
   if(h&&h.cur>0&&h.cur<h.total){
     state.curTime=h.cur;state.curTotal=h.total||totalSec(f);
@@ -1486,7 +1509,7 @@ function playFromContinue(f){
 
 /* ================= 找资源 ================= */
 function openRes(){
-  var f=state.cur;
+  var f=state.detailFilm||state.cur;
   if(!f){toast('请先选择影片');return}
   $('sheetTitle').textContent='找资源 · '+f.t;
   $('sheetBody').innerHTML=
@@ -1653,7 +1676,8 @@ window.searchAndShowSources=searchAndShowSources;window.renderSrcPicker=renderSr
 window.openRes=openRes;window.runRes=runRes;window.copyResByIndex=copyResByIndex;
 window.toggleSwitch=toggleSwitch;
 window.toast=toast;
-window.heroDetail=function(){var f=state.cur||DECK[0];state.curTouched=true;openDetail(f)};
+window.heroDetail=function(){var f=state.heroFilm||DECK[0];openDetail(f)};
+window.heroPlay=heroPlay;
 window.heroStep=heroStep;window.heroGo=heroGo;
 init();
 })();
